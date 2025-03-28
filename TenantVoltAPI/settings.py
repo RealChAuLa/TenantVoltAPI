@@ -46,6 +46,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'TenantVolt.cors_middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'TenantVoltAPI.urls'
