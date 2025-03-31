@@ -1,11 +1,9 @@
-from django.contrib import admin
-from django.urls import path
-from .auth_views import login, signup
+from django.http import HttpResponse, JsonResponse
+from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('health/', lambda request: JsonResponse({'status': 'ok'})),
 
     # Authentication endpoints
-    path('api/auth/login/', login, name='login'),
-    path('api/auth/signup/', signup, name='signup'),
+    path('api/auth/', include('authentication.urls')),
 ]
