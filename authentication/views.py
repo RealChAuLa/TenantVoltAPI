@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from datetime import datetime, UTC
 import logging
-from .firebase_config import initialize_firebase, sign_in_with_email_password, create_user_with_email_password
+from TenantVoltAPI.firebase_config import initialize_firebase, sign_in_with_email_password, create_user_with_email_password
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -21,11 +21,39 @@ def login(request):
         "password": "userPassword123"
     }
 
-    Returns:
+    Returns user profile data including tenants if successful
+
+    Response body:
     {
-        "success": true,
-        "token": "firebase-auth-token",
-        "uid": "user-uid"
+        "mobile_number": "+1234567890",
+        "first_name": "John",
+        "order_date_time": "2025-03-31 20:42:38",
+        "address": "123 Main St, City, Country",
+        "email": "chalana@gmail.com",
+        "tenants": [
+            {
+                "address": "456 Elm St, City, Country",
+                "email": "alice.smith@example.com",
+                "product_id": "1112",
+                "name": "Alice Smith"
+            },
+            {
+                "address": "456 Elm St, City, Country",
+                "email": "alice.smith@example.com",
+                "product_id": "1112",
+                "name": "Alice Smith"
+            },
+            {
+                "address": "789 Oak St, City, Country",
+                "email": "bob.johnson@example.com",
+                "product_id": "1113",
+                "name": "Bob Johnson"
+            }
+        ],
+        "order_status": "pending",
+        "last_name": "Doe",
+        "token": "eyJhLmdvb2dsZS5jb20vdGVuYW50dm9sdCIsImF1ZCI6InRlbmFudHZv",
+        "success": true
     }
     """
     if request.method != 'POST':
@@ -56,12 +84,28 @@ def login(request):
                 'error': error
             }, status=401)
 
-        # Return token and uid
-        return JsonResponse({
-            'success': True,
-            'token': token,
-            'uid': uid
-        })
+        # Initialize Firebase
+        _, firestore_db = initialize_firebase()
+
+        # Get user profile from Firestore
+        house_owners_ref = firestore_db.collection('house_owners').document(uid)
+        house_owner_doc = house_owners_ref.get()
+
+        if not house_owner_doc.exists:
+            return JsonResponse({
+                'success': False,
+                'error': 'User profile Data not found'
+            }, status=404)
+
+        # Get user data
+        user_data = house_owner_doc.to_dict()
+
+        # Add token to the response
+        user_data['token'] = token
+        user_data['success'] = True
+
+        # Return the complete user profile
+        return JsonResponse(user_data)
 
     except json.JSONDecodeError:
         return JsonResponse({'success': False, 'error': 'Invalid JSON'}, status=400)
@@ -87,7 +131,7 @@ def signup(request):
         {
           "name": "Alice Smith",
           "email": "alice.smith@example.com",
-          "product_id": "1112",
+          "product_id": "",
           "address": "456 Elm St, City, Country"
         },
         ...
