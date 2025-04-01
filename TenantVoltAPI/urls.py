@@ -6,4 +6,7 @@ urlpatterns = [
 
     # Authentication endpoints
     path('api/auth/', include('authentication.urls')),
+
+    # Order endpoints
+    path('api/orders/', include('orders.urls')),
 ]
