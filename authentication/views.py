@@ -1,3 +1,5 @@
+from zoneinfo import ZoneInfo
+
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -188,7 +190,7 @@ def signup(request):
             'mobile_number': mobile_number,
             'email': email,
             'address': address,
-            'order_date_time': datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
+            'order_date_time': datetime.now(ZoneInfo("Asia/Colombo")).strftime("%Y-%m-%d %H:%M:%S"),
             'order_status': "pending"
         }
 
