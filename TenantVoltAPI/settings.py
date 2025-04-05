@@ -1,4 +1,6 @@
+import os
 from pathlib import Path
+from django.contrib import staticfiles
 from TenantVoltAPI import cors_middleware
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -36,6 +38,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'TenantVoltAPI.cors_middleware.CorsMiddleware',
 ]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 CORS_ALLOW_ALL_ORIGINS = True  # In production, set to specific domains
 CORS_ALLOW_CREDENTIALS = True
@@ -75,5 +79,6 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
