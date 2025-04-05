@@ -5,4 +5,5 @@ from orders import views
 urlpatterns = [
     path('pending/', views.get_pending_orders, name='get_pending_orders'),
     path('update-status/', views.update_order_status, name='update_order_status'),
+    path('completed/', views.get_completed_orders, name='get_completed_orders'),
 ]
