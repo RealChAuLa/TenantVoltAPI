@@ -1,2 +1,2 @@
 release: python manage.py migrate
-web: gunicorn TenantVoltAPI.settings --log-file -
+web: gunicorn TenantVoltAPI.wsgi --log-file -
