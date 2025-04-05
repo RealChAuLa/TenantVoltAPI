@@ -1,3 +1,4 @@
+import json
 import os
 import firebase_admin
 import requests
@@ -11,11 +12,19 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Get the absolute path to your project directory
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# Path to your Firebase Admin SDK JSON file - adjust this to match your actual file name
-FIREBASE_CONFIG_PATH = os.path.join(BASE_DIR, os.getenv("FIREBASE_ADMIN_SDK_NAME"))
 FIREBASE_WEB_API_KEY = os.getenv("FIREBASE_WEB_API_KEY")
+
+# Get Firebase credentials from environment variable as JSON
+def get_firebase_credentials():
+    firebase_credentials_json = os.getenv("FIREBASE_CREDENTIALS_JSON")
+
+    if not firebase_credentials_json:
+        raise ValueError("FIREBASE_CREDENTIALS_JSON environment variable is not set")
+
+    try:
+        return json.loads(firebase_credentials_json)
+    except json.JSONDecodeError:
+        raise ValueError("Invalid FIREBASE_CREDENTIALS_JSON format")
 
 # Global variables to store Firebase app and Firestore client
 firebase_app = None
@@ -29,15 +38,10 @@ def initialize_firebase():
     if firebase_app:
         return firebase_app, firestore_db
 
-    # Check if the config file exists
-    if not os.path.exists(FIREBASE_CONFIG_PATH):
-        logger.error(f"Firebase config file not found at: {FIREBASE_CONFIG_PATH}")
-        raise FileNotFoundError(f"Firebase config file not found at: {FIREBASE_CONFIG_PATH}")
-
     try:
         # Initialize the app with credential
-        logger.info(f"Initializing Firebase with config from: {FIREBASE_CONFIG_PATH}")
-        cred = credentials.Certificate(FIREBASE_CONFIG_PATH)
+        logger.info(f"Initializing Firebase with config from: FIREBASE_CREDENTIALS_JSON")
+        cred = credentials.Certificate(get_firebase_credentials())
         firebase_app = firebase_admin.initialize_app(cred)
 
         # Initialize Firestore client
