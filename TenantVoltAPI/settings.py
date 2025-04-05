@@ -29,7 +29,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -40,28 +39,6 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True  # In production, set to specific domains
 CORS_ALLOW_CREDENTIALS = True
-
-# Swagger settings
-SWAGGER_SETTINGS = {
-    'SECURITY_DEFINITIONS': {
-        'Bearer': {
-            'type': 'apiKey',
-            'name': 'Authorization',
-            'in': 'header',
-            'description': 'Format: "Bearer {token}"'
-        },
-        'CSRF': {
-            'type': 'apiKey',
-            'name': 'X-CSRFToken',
-            'in': 'header'
-        }
-    },
-    'USE_SESSION_AUTH': False,
-    'JSON_EDITOR': True,
-    'VALIDATOR_URL': None,
-    'DEFAULT_MODEL_RENDERING': 'example',
-    'OPERATIONS_SORTER': 'method',
-}
 
 ROOT_URLCONF = 'TenantVoltAPI.urls'
 
