@@ -9,4 +9,7 @@ urlpatterns = [
 
     # Order endpoints
     path('api/orders/', include('orders.urls')),
+
+    # Bills endpoints
+    path('api/bills/', include('bills.urls')),
 ]
