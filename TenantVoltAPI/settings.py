@@ -2,6 +2,9 @@ import os
 from pathlib import Path
 from django.contrib import staticfiles
 from TenantVoltAPI import cors_middleware
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,6 +16,15 @@ SECRET_KEY = 'django-insecure-w%#dn^txj23*-%@3!%t=gqtf^g83!+j1cq(8^sq)f#m*nn@%m0
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'tenantvolt-5cd875450cc3.herokuapp.com']
+
+# Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 
 # Application definition
 INSTALLED_APPS = [
@@ -26,6 +38,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'authentication',
     'orders',
+    'bills',
 ]
 
 MIDDLEWARE = [
